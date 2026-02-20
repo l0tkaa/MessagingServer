@@ -53,6 +53,7 @@ def main():
         print("[CLIENT] Connection failed:", e)
         return
     
+
     receiver_thread = threading.Thread(
         target = receive_messages, 
         args = (client_socket,),
@@ -61,6 +62,7 @@ def main():
     receiver_thread.start()
 
     # Main thread handles user input and sending messages
+    
     while True:
         message = input("You: ")
         try:
