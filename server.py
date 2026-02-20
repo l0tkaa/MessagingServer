@@ -43,7 +43,6 @@ try:
         print("Client says:", message)
         
 
-
         # Send a reply back to the client (string -> bytes)
         reply = f"Server recieved: {message}"
         client_socket.send(reply.encode('utf-8'))
