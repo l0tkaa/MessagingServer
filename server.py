@@ -1,50 +1,55 @@
 import socket
+#receive and reply
 
-
-# server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# HOST = '127.0.0.1'
-# PORT = 12345
-# server_socket.bind((HOST, PORT))
-
-# server_socket.listen(1)
-
-# #keep connection open until client disconnects
-# try:
-#     while True:
-#         data = client_socket.recv(1024)
-#         if not data:
-#             break
-# finally:
-#     print("Connection closed")
-#     client_socket.close()
-#     server_socket.close()
-
-#Create TCP Socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind to localhost on port 12345
 HOST = '127.0.0.1'
 PORT = 12345
+
+
+#Create TCP Socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
+#Bind the created socket to localhost:12345 so clients know where to connect
 server_socket.bind((HOST, PORT))
 
-# Listen for a single connection
+
+# Listen for incoming connections (queue up to 5 pending clients)
 server_socket.listen(1)
 print(f"Server listening on {HOST}:{PORT}...")
 
-# Accept a connection (blocks until a client connects)
-client_socket, client_address = server_socket.accept()
-print(f"Client connected from {client_address}")
 
-# Keep connection open until client disconnects
+
+# accept() blocks until a client connects
+client_socket, addr = server_socket.accept()
+print(f"Client connected from {addr}")
+
+
 try:
     while True:
+        # Wait for message from client (blocks until data arrives)
         data = client_socket.recv(1024)
+        
+
+        # If empty bytes returned, client disconnected
         if not data:
+            print(f"[DISCONNECTED] {addr}. Client disconnected.")
             break
+        
+
+        # Convert bytes -> string
+        message = data.decode('utf-8')
+        print("Client says:", message)
+        
+
+
+        # Send a reply back to the client (string -> bytes)
+        reply = f"Server recieved: {message}"
+        client_socket.send(reply.encode('utf-8'))
+
 
 finally:
-    print("Connection closed")
     client_socket.close()
     server_socket.close()
-    
+    print("Server closed")
