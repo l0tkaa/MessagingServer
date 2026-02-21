@@ -54,7 +54,7 @@ def main():
                 pass
             break
         try:
-            #send user input to server
+            # send user input to server
             client_socket.send(message.encode())
         except Exception as e:
             print(f"[{timestamp()}] Send failed: ", e )
@@ -64,7 +64,6 @@ def main():
         client_socket.close()
         print(f"[{timestamp()}] Connection closed.") 
 
+
     if __name__ == "__main__":
         main()
-
-
