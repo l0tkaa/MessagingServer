@@ -1,7 +1,14 @@
 import socket
 import threading
 from datetime import datetime
+from logger_config import setup_logger
 
+
+logging.basicConfig(
+    level=logging.DEBUG,  # show DEBUG, INFO, WARNING, ERROR messages
+    format='[%(asctime)s] %(levelname)s: %(message)s',  # timestamp + level + message
+    datefmt='%H:%M:%S'  # optional: just show hour:minute:second
+)
 
 # Server configuration
 HOST = '127.0.0.1'
@@ -24,11 +31,12 @@ def receive_messages(client_socket):
             data = client_socket.recv(1024)
             if not data:
                 # Client disconnected cleanly
+                logging.info("Client disconnected.")
                 print(f"\n[{timestamp()}] Client disconnected.")
                 break
             
-            print(f"\n[{timestamp()}] Client: {data.decode()}" )
-            print("You: ", end="", flush=True)
+            print(f"\n[{timestamp()}] From Server#1: {data.decode()}" )
+            print(f"[{timestamp()}]From Server#2: ", end="", flush=True)
         except Exception as e:
             print(f"\n[{timestamp()}] Receive error:", e)
             break
@@ -40,7 +48,9 @@ def send_messages(client_socket):
     """
     while True:
         try:
-            message = input("You: ")
+            message = input(f"[{timestamp()}]From Client: ").strip()
+            if not message:
+                continue
             if message.lower() in ("/quit", "exit"):
                 print(f"[{timestamp()}] Closing connection...")
                 client_socket.send("Server has left the chat.".encode())
@@ -51,6 +61,7 @@ def send_messages(client_socket):
             break
 
 def main():
+    logging.debug("Server starting")
     """
     Entry point for the server. 
     Sets up the socket, accepts a client, and starts threads for communication. 
