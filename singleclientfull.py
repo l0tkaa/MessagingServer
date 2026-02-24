@@ -3,12 +3,11 @@ import threading
 from datetime import datetime
 from logger_config import setup_logger
 
-logger - setup_logger("client")
+logger = setup_logger("client")  # logs go to console + logs/client.log
 
 def connect_to_server():
     logger.info("Client connecting...")
     logger.error("Client error example")
-
 
 # logging.basicConfig(
 #     level=logging.DEBUG,  # show DEBUG, INFO, WARNING, ERROR messages
@@ -29,6 +28,7 @@ def receive_messages(sock):
     Thread function to constantly listen for messages form the server. 
     Runs in the background while main thread handles user input.
     """
+    logger.info("clientrecieve messages function")
     while True:
         try:
             data = sock.recv(1024) #blocking read
@@ -38,15 +38,15 @@ def receive_messages(sock):
             #     print(f"\n[{timestamp()}] Server: {data.decode()}")
             #     break
             if not data:
-                print(f"/[{timestamp()}] Server client disconnected.")
+                print(f"/[{timestamp()}] Server6666 client disconnected.")
                 break
 
-            print(f"\n[{timestamp()}] Server client2 discoennected.")
-            print("From client: ", end ="", flush=True)
+            print(f"\n[{timestamp()}] Server client23333 discoennected.")
+            print("From client1111: ", end ="", flush=True)
 
 
         except Exception as e:
-            logging.error(f"Receive error: {e}")
+            logger.error(f"Receive error: {e}")
             break
 
 
@@ -55,18 +55,16 @@ def main():
     """
     Entry point for the client. Connects to server and starts to receive the thread. Main thread handles sending messages."""
 
-
-    logging.debug("Client starting...")
+    logger.debug("Client starting...")
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        logging.debug("attempting to connect...")
+        logger.debug("attempting to connect...")
         client_socket.connect((HOST, PORT))
-        logging.info("Client connected to server.")
-
+        logger.info("Client connected to server.")
 
     except Exception as e:
-        logging.error(f"Client connection failed: {e}")
+        logger.error(f"Client connection failed: {e}")
         return
     
     recv_thread = threading.Thread(
@@ -78,7 +76,7 @@ def main():
 
     # main thread handles sending messages
     while True:
-        message = input("You: ")
+        message = input("You22222: ")
         if message.lower() in ("/quit", "exit"):
             print(f"[{timestamp()}] Exiting chat...")
             try:
@@ -90,12 +88,12 @@ def main():
             # send user input to server
             client_socket.send(message.encode())
         except Exception as e:
-            logging.error(f"Send failed: {e}")
+            logger.error(f"Send failed: {e}")
             break
-        
+
     # clean up
     client_socket.close()
-    logging.info("Connection closed.")
+    logger.info("Connection closed.")
 
 
 if __name__ == "__main__":

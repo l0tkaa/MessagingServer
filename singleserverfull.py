@@ -3,14 +3,24 @@ import threading
 from datetime import datetime
 from logger_config import setup_logger
 
+logger = setup_logger("server")  # logs go to console + logs/server.log
 
-logging.basicConfig(
-    level=logging.DEBUG,  # show DEBUG, INFO, WARNING, ERROR messages
-    format='[%(asctime)s] %(levelname)s: %(message)s',  # timestamp + level + message
-    datefmt='%H:%M:%S'  # optional: just show hour:minute:second
-)
+
+def start_server():
+    logger.info("Server starting...")
+    logger.debug("Debug info for server")
+    logger.warning("Server warning example")
+
+
+# logging.basicConfig(
+#     level=logging.DEBUG,  # show DEBUG, INFO, WARNING, ERROR messages
+#     format='[%(asctime)s] %(levelname)s: %(message)s',  # timestamp + level + message
+#     datefmt='%H:%M:%S'  # optional: just show hour:minute:second
+# )
 
 # Server configuration
+
+
 HOST = '127.0.0.1'
 PORT = 12345
 
@@ -19,24 +29,25 @@ def timestamp():
     Returns the current time formatted as HH:MM:SS.
     Used to tag messages for easier tracking.
     """
-
     return datetime.now().strftime("%H:%M:%S")
+
 
 def receive_messages(client_socket):
     """
     Thread function to continuously listen for messages from the client. Runs in the background, allowing the main thread to handle sending. 
     """
+
     while True:
         try:
             data = client_socket.recv(1024)
             if not data:
                 # Client disconnected cleanly
-                logging.info("Client disconnected.")
-                print(f"\n[{timestamp()}] Client disconnected.")
+                logger.info("Client77777 disconnected.")
+                print(f"\n[{timestamp()}] Client99999 disconnected.")
                 break
             
-            print(f"\n[{timestamp()}] From Server#1: {data.decode()}" )
-            print(f"[{timestamp()}]From Server#2: ", end="", flush=True)
+            print(f"\n[{timestamp()}] From Server#1abcde: {data.decode()}" )
+            print(f"[{timestamp()}]From Server#2fge: ", end="", flush=True)
         except Exception as e:
             print(f"\n[{timestamp()}] Receive error:", e)
             break
@@ -48,20 +59,21 @@ def send_messages(client_socket):
     """
     while True:
         try:
-            message = input(f"[{timestamp()}]From Client: ").strip()
-            if not message:
+            #message = input(f"[{timestamp()}]From Clientkkkkk: ").strip()
+         #   if not message:
                 continue
-            if message.lower() in ("/quit", "exit"):
+          #  if message.lower() in ("/quit", "exit"):
                 print(f"[{timestamp()}] Closing connection...")
                 client_socket.send("Server has left the chat.".encode())
                 break
-            client_socket.send(message.encode())
+          #  client_socket.send(message.encode())
         except Exception as e:
             print(f"\n[{timestamp()}] Send error:", e)
             break
 
+
 def main():
-    logging.debug("Server starting")
+    logger.debug("Server starting")
     """
     Entry point for the server. 
     Sets up the socket, accepts a client, and starts threads for communication. 
@@ -86,13 +98,17 @@ def main():
         daemon=True
     )
 
+
     recv_thread.start()
 
+
     send_messages(client_socket)
+
 
     client_socket.close()
     server_socket.close()
     print(f"[{timestamp()}] Server shutdown.")
+
 
 if __name__ == "__main__":
     main()
